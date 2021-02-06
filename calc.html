@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<div class="container-fluid">
+    <header>
+        <h1>Stellas super Mathe Game</h1>
+    </header>
+
+	<label>Was ist?</label>
+	<div id="task"></div>
+	<input type="text" name="answer1" id="answer1" placeholder="Ergebnis">
+
+	<br>
+	<br>
+	<div id="properanswer"></div>
+	
+	<br>
+	<br>
+	<div id="stats"></div>
+
+
+
+</div> <!-- End Container-->
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<script>
+$( document ).ready(function() {
+
+	var input = document.getElementById("answer1");
+
+	// Execute a function when the user releases a key on the keyboard
+	input.addEventListener("keyup", function(event) {
+	  // Number 13 is the "Enter" key on the keyboard
+	  if (event.keyCode === 13) {
+		// Cancel the default action, if needed
+		event.preventDefault();
+		// Trigger the button element with a click
+		submit1();
+		input.value = '';
+		//show proper answer, and empty field
+	  }
+	}); 
+	
+	window.totalGood = 0;
+	window.totalWrong = 0;
+	window.totalToDo = 20;
+
+  defineTask();
+});
+function submit1(){
+
+	//set initial time and get time elapsed
+    if (typeof(window.startTime) === 'undefined') {
+	  window.startTime = new Date();
+	}
+	var endTime = new Date();
+    var timeDiff = endTime - startTime; //in ms
+    // get seconds 
+    var seconds = Math.round(timeDiff/1000);
+	var timeElapsed = 'seconds used:' + seconds;
+	
+
+
+	//get result of current task and compare with answer	
+	var answer = parseInt(document.getElementById("answer1").value);	
+	var result = window.result;	
+	if (answer != result) {
+	  console.log('mooie jongen ben jij, dat was fout! Jouw antwoord: ' + answer + ' maar goed was: ' + result + ' (opgave: ' + window.oldtask + ')');
+	  document.getElementById("properanswer").innerHTML=window.oldtask + ' = ' + result + ' UND NICHT: ' + answer;
+	  window.totalWrong = window.totalWrong + 1;
+	}
+	else {
+	  window.totalGood = window.totalGood + 1;	
+	  document.getElementById("properanswer").innerHTML='';
+	}
+	
+	
+	var goodCount = 'Richtig: ' + window.totalGood + ' Falsch: ' + window.totalWrong;
+	var remainingCount = window.totalToDo - window.totalGood - window.totalWrong;
+	var remainingString = 'Übrig von ' + window.totalToDo + ' sind: ' + (remainingCount);	
+	document.getElementById("stats").innerHTML=timeElapsed + '<BR>' + goodCount + '<BR>' + remainingString;
+		
+	//check whether to continue
+	if (remainingCount == 0) {
+	  alert('Hurra, fertig!');
+	  location.reload();
+	}
+	
+	//Load next task
+	defineTask();
+}
+  
+function defineTask(){
+    var firstNumber = generateRandomBetween(0,9);
+	var secondNumber = generateRandomBetween(0,firstNumber);
+	var taskString = firstNumber + ' - ' + secondNumber;
+	var result = firstNumber - secondNumber;
+	//store this result now, so we can use it later to compare
+	window.result = result;
+	window.oldtask = taskString;
+    console.log('next task:' + taskString + ' result:' + result);
+	document.getElementById("task").innerHTML=taskString;
+}  
+  
+function alertme() {
+  console.log('about to show alert');
+
+  alert('hello');
+}  
+
+function generateRandomBetween(lower,upper) {
+  //console.log('lower:' + lower);
+  //console.log('upper:' + upper);  
+  var range = upper - lower;
+  var randomNumber = Math.floor(Math.random() * (range + 1)) + lower; 
+  //console.log('random:' + randomNumber);
+  return randomNumber;
+}
+</script>
+
+</body>
+</html>
